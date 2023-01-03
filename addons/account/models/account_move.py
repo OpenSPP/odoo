@@ -3419,7 +3419,7 @@ class AccountMove(models.Model):
     def _compute_display_qr_code(self):
         for record in self:
             record.display_qr_code = (
-                record.move_type in ('out_invoice', 'out_receipt')
+                record.move_type in ('out_invoice', 'out_receipt', 'in_invoice', 'in_receipt')
                 and record.company_id.qr_code
             )
 
@@ -3720,7 +3720,7 @@ class AccountMoveLine(models.Model):
         string="Originator Tax Distribution Line", ondelete='restrict', readonly=True,
         check_company=True,
         help="Tax distribution line that caused the creation of this move line, if any")
-    tax_tag_ids = fields.Many2many(string="Tags", comodel_name='account.account.tag', ondelete='restrict',
+    tax_tag_ids = fields.Many2many(string="Tags", comodel_name='account.account.tag', ondelete='restrict', context={'active_test': False},
         help="Tags assigned to this line by the tax creating it, if any. It determines its impact on financial reports.", tracking=True)
     tax_audit = fields.Char(string="Tax Audit String", compute="_compute_tax_audit", store=True,
         help="Computed field, listing the tax grids impacted by this line, and the amount it applies to each of them.")
